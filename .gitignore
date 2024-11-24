@@ -1,0 +1,5 @@
+# ไม่ต้องการติดตามไฟล์ชั่วคราวของ editor
+*.log
+.DS_Store
+node_modules/
+.env

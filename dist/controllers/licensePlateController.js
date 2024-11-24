@@ -1,37 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -42,27 +9,53 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllLicensePlates = exports.createLicensePlate = void 0;
-const LicensePlatesService = __importStar(require("../services/licensePlatesService"));
-// เพิ่มข้อมูลใหม่ในตาราง
-const createLicensePlate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getAllLicensePlate = exports.createNewLicensePlate = void 0;
+const licensePlatesService_1 = require("../services/licensePlatesService");
+// Controller สำหรับสร้าง License Plate ใหม่
+const createNewLicensePlate = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield LicensePlatesService.createLicensePlate(req.body);
-        res.status(201).json({ message: 'License plate added successfully', data });
+        // รับข้อมูลจาก Body
+        const { licensePlateData, base64Image } = req.body;
+        // ตรวจสอบข้อมูลที่ได้รับ
+        if (!licensePlateData || !base64Image) {
+            res.status(400).json({ message: 'License Plate data and image are required' });
+        }
+        // ตรวจสอบ lat, lon ถ้าต้องการให้ค่าเหล่านี้เป็นต้องมีค่าก็สามารถตรวจสอบได้ที่นี่
+        if (licensePlateData.lon === undefined) {
+            res.status(400).json({ message: 'Longitude (lon) is required' });
+        }
+        // สร้าง License Plate พร้อมกับบันทึก URL ของภาพ
+        const data = yield (0, licensePlatesService_1.createLicensePlate)(licensePlateData, base64Image);
+        if (!data) {
+            res.status(400).json({ message: 'Failed to create license plate' });
+        }
+        // ส่งกลับข้อมูลเมื่อสำเร็จ
+        res.status(201).json({
+            message: 'License Plate created successfully',
+            data: data,
+        });
     }
     catch (error) {
-        res.status(500).json({ message: 'Error adding license plate', error: error.message });
+        // ส่งข้อความ error เมื่อมีข้อผิดพลาด
+        console.error(error); // เพิ่มการ log ข้อผิดพลาดเพื่อช่วยในการดีบั๊ก
+        next(error); // ส่งข้อผิดพลาดไปยัง Error Handler
     }
 });
-exports.createLicensePlate = createLicensePlate;
-// ดึงข้อมูลทั้งหมด
-const getAllLicensePlates = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.createNewLicensePlate = createNewLicensePlate;
+// สร้าง License Plate ใหม่พร้อมกับบันทึกภาพ
+const getAllLicensePlate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield LicensePlatesService.getAllLicensePlates();
-        res.status(200).json({ data });
+        // Call the service to get the license plates data
+        const data = yield (0, licensePlatesService_1.getAllLicensePlatesFromDb)();
+        if (!data || data.length === 0) {
+            res.status(404).json({ message: 'No license plates found' });
+        }
+        res.status(200).json(data);
     }
     catch (error) {
-        res.status(500).json({ message: 'Error fetching license plates', error: error.message });
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        console.error('Unhandled error:', error);
+        res.status(500).json({ error: errorMessage });
     }
 });
-exports.getAllLicensePlates = getAllLicensePlates;
+exports.getAllLicensePlate = getAllLicensePlate;

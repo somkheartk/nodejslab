@@ -21,7 +21,8 @@ export const uploadImageToSupabase = async (base64Image: string, fileName: strin
     .from('license-plate-images') // ชื่อ Bucket
     .upload(fileName, fs.createReadStream(tempFilePath), {
       cacheControl: '3600',
-      upsert: true, // ถ้ามีไฟล์เดิมแล้วจะอัปเดตใหม่
+      upsert: true, // ถ้ามีไฟล์เดิมแล้วจะอัปเดตใหม่,
+      duplex: 'half', // Specify duplex option here
     });
 
   if (error) {

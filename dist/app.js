@@ -17,7 +17,7 @@ app.use(express_1.default.static('public'));
 app.use(express_1.default.json({ limit: '100mb' }));
 app.use(express_1.default.urlencoded({ limit: '100mb', extended: true }));
 // Routes
-app.use('/products', productRoutes_1.default);
+app.use('/api/products', productRoutes_1.default);
 app.use('/licenseplages', licensePlateRoutes_1.default); // ตั้งเส้นทางหลักให้กับ license plate routes
 app.use('/gallery', galleryRoutes_1.default);
 app.use('/lpr-uploads', express_1.default.static(path_1.default.join(__dirname, 'lpr-uploads')));

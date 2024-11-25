@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "prestart": "git pull && npm install",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
     "start": "pm2 stop app && rm -rf dist/* && tsc && pm2 start dist/app.js",

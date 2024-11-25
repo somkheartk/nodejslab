@@ -6,7 +6,7 @@
     "prestart": "git pull && npm install",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
-    "start": "np tsc && node dist/app.js",
+    "start": "rm -rf dist/* && npx tsc && node dist/app.js",
     "dev": "tsc --watch"
   },
   "keywords": [],

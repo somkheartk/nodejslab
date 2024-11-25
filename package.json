@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "prestart": "git pull && npm install",
+    "prestart": "npx tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
     "start": "npx tsc && node dist/app.js",

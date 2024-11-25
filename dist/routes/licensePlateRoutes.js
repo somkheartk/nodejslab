@@ -8,4 +8,5 @@ const licensePlateController_1 = require("../controllers/licensePlateController"
 const router = express_1.default.Router();
 // Route สำหรับสร้าง License Plate พร้อมบันทึกภาพ
 router.post('/create', licensePlateController_1.createNewLicensePlate);
+router.get('/all', licensePlateController_1.getAllLicensePlate);
 exports.default = router;

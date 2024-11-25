@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
-    "start": "pm2 stop app && rm -rf dist/* && tsc && pm2 start dist/app.js",
+    "start": "rm -rf dist/* && tsc && pm2 start dist/app.js",
     "dev": "tsc --watch"
   },
   "keywords": [],

@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "prestart": "git pull && npm install",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
-    "start": "rm -rf dist/* && tsc && pm2 start dist/app.js",
+    "start": "npx tsc && node dist/app.js",
     "dev": "tsc --watch"
   },
   "keywords": [],
